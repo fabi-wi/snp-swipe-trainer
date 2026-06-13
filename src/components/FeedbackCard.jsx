@@ -8,6 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { TechnicalText } from "./TechnicalText.jsx";
 
 export function FeedbackCard({
   card,
@@ -58,14 +59,14 @@ export function FeedbackCard({
 
       <div className="feedback-card__statement">
         <span>Aussage</span>
-        <p>{card.statement}</p>
+        <TechnicalText as="p" text={card.statement} />
       </div>
 
       <div className="explanation-box">
         <Lightbulb aria-hidden="true" size={25} />
         <div>
           <strong>Erklärung</strong>
-          <p>{card.explanation}</p>
+          <TechnicalText as="p" text={card.explanation} />
         </div>
       </div>
 

@@ -15,3 +15,7 @@ When implementing from a selected generated mock, treat that image as the source
 
 The app intentionally keeps the question prompt above the statement because some
 KPRIM statements depend on their question context.
+
+Use proper German umlauts (`ä`, `ö`, `ü`) and `ß` in all user-facing copy and
+learning content. Keep ASCII spellings only where exact source matching or code
+syntax requires them.

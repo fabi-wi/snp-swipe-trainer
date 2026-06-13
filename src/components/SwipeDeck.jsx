@@ -19,6 +19,7 @@ import {
   Hand,
   X,
 } from "lucide-react";
+import { TechnicalText } from "./TechnicalText.jsx";
 
 const SWIPE_THRESHOLD = 110;
 
@@ -94,8 +95,8 @@ const SwipeCard = forwardRef(function SwipeCard({ card, onAnswer }, ref) {
         <span>Aussage {card.letter}</span>
       </div>
       <span className="kprim-label">KPRIM</span>
-      <p className="card-prompt">{card.prompt}</p>
-      <h1>{card.statement}</h1>
+      <TechnicalText as="p" className="card-prompt" text={card.prompt} />
+      <TechnicalText as="h1" text={card.statement} />
       <div className="drag-hint">
         <span />
         <div>

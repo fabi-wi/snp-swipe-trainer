@@ -38,7 +38,7 @@ npm run build
 
 ## Kartensatz neu importieren
 
-Der Importer benötigt `pdftotext`. Lege die Quelldatei standardmässig unter
+Der Importer benötigt `pdftotext`. Lege die Quelldatei standardmäßig unter
 folgendem Namen im Projektordner ab:
 
 ```text

@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { normalizeLearningText } from "../src/utils/learningText.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const defaultPdf =
@@ -17,7 +18,7 @@ const rawText = execFileSync("pdftotext", ["-layout", pdfPath, "-"], {
 const solutionMarker = rawText.indexOf("Loesungsheft");
 
 if (solutionMarker === -1) {
-  throw new Error("Der Loesungsheft-Abschnitt wurde im PDF nicht gefunden.");
+  throw new Error("Der Lösungsheft-Abschnitt wurde im PDF nicht gefunden.");
 }
 
 const solutionPageStart = rawText.lastIndexOf("\f", solutionMarker);
@@ -81,7 +82,7 @@ function parseTasks(text) {
       if (topicLine) {
         currentTopic = {
           number: topicMatch[1],
-          name: topicLine.value,
+          name: normalizeLearningText(topicLine.value),
         };
         topics.set(currentTopic.number, currentTopic);
         index = topicLine.index;
@@ -98,7 +99,7 @@ function parseTasks(text) {
     const promptLine = nextContentLine(lines, index + 1);
 
     if (!promptLine) {
-      throw new Error(`Kein Fragetext fuer ${headerMatch[1]} gefunden.`);
+      throw new Error(`Kein Fragetext für ${headerMatch[1]} gefunden.`);
     }
 
     const statements = [];
@@ -115,22 +116,22 @@ function parseTasks(text) {
       if (statementMatch) {
         activeStatement = {
           letter: statementMatch[1],
-          text: stripAnswerBoxes(statementMatch[2]),
+          text: normalizeLearningText(stripAnswerBoxes(statementMatch[2])),
         };
         statements.push(activeStatement);
         continue;
       }
 
       if (activeStatement && !isNoise(lines[cursor])) {
-        activeStatement.text = compact(
-          `${activeStatement.text} ${stripAnswerBoxes(lines[cursor])}`,
+        activeStatement.text = normalizeLearningText(
+          compact(`${activeStatement.text} ${stripAnswerBoxes(lines[cursor])}`),
         );
       }
     }
 
     if (statements.length !== 4) {
       throw new Error(
-        `${headerMatch[1]} enthaelt ${statements.length} statt 4 Aussagen.`,
+        `${headerMatch[1]} enthält ${statements.length} statt 4 Aussagen.`,
       );
     }
 
@@ -141,8 +142,8 @@ function parseTasks(text) {
 
     questions.set(headerMatch[1], {
       id: headerMatch[1],
-      category: compact(headerMatch[2]),
-      prompt: promptLine.value,
+      category: normalizeLearningText(compact(headerMatch[2])),
+      prompt: normalizeLearningText(promptLine.value),
       topicNumber,
       topic: topic?.name ?? `Thema ${topicNumber}`,
       statements,
@@ -182,22 +183,22 @@ function parseSolutions(text) {
         activeEntry = {
           letter: answerMatch[1],
           correct: answerMatch[2] === "R",
-          explanation: compact(answerMatch[3]),
+          explanation: normalizeLearningText(compact(answerMatch[3])),
         };
         entries.push(activeEntry);
         continue;
       }
 
       if (activeEntry && !isNoise(lines[cursor])) {
-        activeEntry.explanation = compact(
-          `${activeEntry.explanation} ${lines[cursor]}`,
+        activeEntry.explanation = normalizeLearningText(
+          compact(`${activeEntry.explanation} ${lines[cursor]}`),
         );
       }
     }
 
     if (entries.length !== 4) {
       throw new Error(
-        `${headerMatch[1]} enthaelt ${entries.length} statt 4 Loesungen.`,
+        `${headerMatch[1]} enthält ${entries.length} statt 4 Lösungen.`,
       );
     }
 
@@ -216,7 +217,7 @@ for (const question of questions.values()) {
   const answers = solutions.get(question.id);
 
   if (!answers) {
-    throw new Error(`Keine Loesungen fuer ${question.id} gefunden.`);
+    throw new Error(`Keine Lösungen für ${question.id} gefunden.`);
   }
 
   for (const statement of question.statements) {
@@ -224,7 +225,7 @@ for (const question of questions.values()) {
 
     if (!answer) {
       throw new Error(
-        `Keine Loesung fuer ${question.id}-${statement.letter} gefunden.`,
+        `Keine Lösung für ${question.id}-${statement.letter} gefunden.`,
       );
     }
 
@@ -245,7 +246,7 @@ for (const question of questions.values()) {
 
 if (questions.size !== 291 || cards.length !== 1164) {
   throw new Error(
-    `Import unvollstaendig: ${questions.size} Fragen und ${cards.length} Karten.`,
+    `Import unvollständig: ${questions.size} Fragen und ${cards.length} Karten.`,
   );
 }
 
