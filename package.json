@@ -1,0 +1,22 @@
+{
+  "name": "snp-swipe-trainer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "import:cards": "node scripts/import-kprim.mjs"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/manrope": "^5.2.8",
+    "@vitejs/plugin-react": "5.0.4",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.18.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "vite": "6.4.2"
+  }
+}
