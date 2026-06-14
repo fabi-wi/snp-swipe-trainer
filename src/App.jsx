@@ -203,9 +203,9 @@ function SettingsModal({ trainer, onClose }) {
           diesem Browser gespeichert.
         </p>
         <p>
-          Datensatz: {cardData.questionCount} KPRIM-Fragen mit{" "}
-          {cardData.cardCount} einzelnen Aussagen aus{" "}
-          <code>{cardData.source}</code>.
+          Datensatz: {cardData.cardCount} einzelne Aussagen in{" "}
+          {cardData.topics.length} Prüfungsthemen. Jede Aussage besitzt eine
+          direkte Richtig/Falsch-Entscheidung und eine Erklärung.
         </p>
       </div>
       <button

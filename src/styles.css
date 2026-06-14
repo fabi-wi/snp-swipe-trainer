@@ -66,6 +66,8 @@ kbd {
 }
 
 .technical-text__code {
+  display: inline-block;
+  max-width: 100%;
   margin-inline: 0.06em;
   padding: 0.08em 0.3em 0.12em;
   color: #0b5b50;
@@ -78,8 +80,33 @@ kbd {
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.35;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
   -webkit-box-decoration-break: clone;
+}
+
+.technical-text__code-line {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-block: 0.34em;
+}
+
+.technical-text__code--display {
+  max-width: min(100%, 680px);
+  padding: 0.42em 0.72em 0.48em;
+  overflow-x: auto;
+  color: #d8fff5;
+  border-color: #315f6b;
+  border-radius: 0.5em;
+  background: #0b2738;
+  box-shadow:
+    inset 0 -2px 0 rgb(0 0 0 / 18%),
+    0 5px 14px rgb(12 45 62 / 14%);
+  font-size: 0.72em;
+  scrollbar-color: #74cdb8 transparent;
+  scrollbar-width: thin;
 }
 
 .technical-text__code--command {
@@ -383,6 +410,11 @@ kbd {
   vertical-align: 0.12em;
 }
 
+.swipe-card h1 .technical-text__code--display {
+  font-size: 0.66em;
+  vertical-align: 0;
+}
+
 .drag-hint {
   margin-top: auto;
   padding-top: 28px;
@@ -582,6 +614,11 @@ kbd {
 .feedback-card__statement .technical-text__code,
 .explanation-box .technical-text__code {
   font-size: 0.88em;
+}
+
+.feedback-card__statement .technical-text__code--display,
+.explanation-box .technical-text__code--display {
+  font-size: 0.8em;
 }
 
 .explanation-box {

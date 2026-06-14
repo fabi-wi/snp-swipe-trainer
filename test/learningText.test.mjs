@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   formatLearningText,
+  isDisplayCodeSegment,
   normalizeGermanProse,
   normalizeLearningText,
 } from "../src/utils/learningText.js";
@@ -116,4 +117,49 @@ test("avoids prose comparisons and keeps complete assignments together", () => {
       { type: "text", value: " verdeckt die globale Variable." },
     ],
   );
+});
+
+test("keeps complete C expressions and declarations in one code segment", () => {
+  assert.deepEqual(
+    formatLearningText(
+      "Eine Zuweisung von (int)txt - 3 in ein char-Feld ist möglich.",
+    ),
+    [
+      { type: "text", value: "Eine Zuweisung von " },
+      { type: "code", kind: "code", value: "(int)txt - 3" },
+      { type: "text", value: " in ein char-Feld ist möglich." },
+    ],
+  );
+  assert.equal(
+    isDisplayCodeSegment(
+      formatLearningText(
+        "Eine Zuweisung von (int)txt - 3 in ein char-Feld ist möglich.",
+      )[1],
+    ),
+    true,
+  );
+
+  const declaration = formatLearningText(
+    "float (*tab[10])(int); deklariert ein Array.",
+  );
+
+  assert.deepEqual(declaration, [
+    {
+      type: "code",
+      kind: "code",
+      value: "float (*tab[10])(int);",
+    },
+    { type: "text", value: " deklariert ein Array." },
+  ]);
+  assert.equal(isDisplayCodeSegment(declaration[0]), true);
+});
+
+test("promotes long expressions but keeps short tokens inline", () => {
+  const call = formatLearningText(
+    'Bei scanf("%d", &day); muss die Adresse übergeben werden.',
+  )[1];
+  const token = formatLearningText("NULL ist ein Nullpointer-Konstantenausdruck.")[0];
+
+  assert.equal(isDisplayCodeSegment(call), true);
+  assert.equal(isDisplayCodeSegment(token), false);
 });

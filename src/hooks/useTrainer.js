@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import cardData from "../data/cards.json";
 
-const STORAGE_KEY = "snp-swipe-trainer:v1";
-const STATE_VERSION = 1;
+const STORAGE_KEY = "snp-swipe-trainer:v2";
+const STATE_VERSION = 2;
 const TOPIC_ALL = "all";
 const TOPIC_RETRY = "retry";
 const cardsById = new Map(cardData.cards.map((card) => [card.id, card]));

@@ -3,8 +3,11 @@
 Ein spielerischer, lokaler Swipe-Trainer zur Vorbereitung auf KPRIM-Fragen
 im Modul Systemnahe Programmierung (SNP).
 
-- 291 KPRIM-Fragen
-- 1'164 einzelne Richtig/Falsch-Karten
+- 320 kuratierte Richtig/Falsch-Aussagen
+- 16 kompakte Prüfungsthemen mit je 20 Karten
+- exakt ausgeglichene Antworten: 160 richtig, 160 falsch
+- 128 neu verfasste Prüfungsfallen im Stil der Kurs-Quizfragen
+- 192 nach Schwierigkeit und Relevanz ausgewählte Bestandsaussagen
 - Swipe, Buttons und Tastatur (`A`/`←`, `D`/`→`)
 - sofortige Erklärung nach einer falschen Antwort
 - Themenfilter, Mischen und Wiederholungsqueue
@@ -36,7 +39,20 @@ Die App läuft danach unter `http://127.0.0.1:5173/`.
 npm run build
 ```
 
-## Kartensatz neu importieren
+## Kartensatz neu bauen
+
+Der produktive Kartensatz wird reproduzierbar aus dem neuen Prüfungskern und
+einer streng gefilterten Auswahl des Legacy-Katalogs gebaut:
+
+```bash
+npm run build:cards
+```
+
+Der Builder bricht ab, wenn der Katalog mindestens 400 Karten, Duplikate,
+fehlende Erklärungen, unausgeglichene Antworten oder eine ungleichmässige
+Themenabdeckung enthält.
+
+## Legacy-PDF neu importieren
 
 Der Importer benötigt `pdftotext`. Lege die Quelldatei standardmäßig unter
 folgendem Namen im Projektordner ab:
@@ -58,20 +74,22 @@ npm run import:cards -- /absoluter/pfad/zum/trainer.pdf
 ```
 
 Der Import bricht ab, falls nicht exakt 291 Fragen und 1'164 Karten erkannt
-werden. Die abgeleiteten Daten liegen in `src/data/cards.json`.
+werden. Die vollständigen Legacy-Daten liegen danach in
+`src/data/cards.legacy.json`; anschliessend erzeugt das Script automatisch den
+kuratierten Produktdatensatz in `src/data/cards.json`.
 
 ## Speicherung
 
-Der Lernstand wird ausschliesslich im Browser unter
-`snp-swipe-trainer:v1` in `localStorage` gespeichert. In den Einstellungen
+Der Lernstand wird ausschließlich im Browser unter
+`snp-swipe-trainer:v2` in `localStorage` gespeichert. In den Einstellungen
 kann das aktuelle Deck neu gestartet oder der gesamte Lernstand gelöscht
 werden.
 
 ## Mitwirken
 
-Issues und Pull Requests sind willkommen. Für Änderungen am Kartensatz bitte
-auch die betroffenen Erklärungen prüfen und sicherstellen, dass
-`npm run build` erfolgreich durchläuft.
+Issues und Pull Requests sind willkommen. Änderungen am Prüfungskern erfolgen
+in `content/exam-kprim.mjs`. Danach `npm run build:cards`, `npm test` und
+`npm run build` ausführen.
 
 ## Hinweise zu den Lerninhalten
 
