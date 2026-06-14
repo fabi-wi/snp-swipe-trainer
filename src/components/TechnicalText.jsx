@@ -1,4 +1,7 @@
-import { formatLearningText } from "../utils/learningText.js";
+import {
+  formatLearningText,
+  isDisplayCodeSegment,
+} from "../utils/learningText.js";
 
 export function TechnicalText({
   as: Component = "span",
@@ -12,12 +15,23 @@ export function TechnicalText({
     <Component className={classes}>
       {segments.map((segment, index) =>
         segment.type === "code" ? (
-          <code
-            className={`technical-text__code technical-text__code--${segment.kind}`}
-            key={`${segment.value}-${index}`}
-          >
-            {segment.value}
-          </code>
+          isDisplayCodeSegment(segment) ? (
+            <span
+              className="technical-text__code-line"
+              key={`${segment.value}-${index}`}
+            >
+              <code className="technical-text__code technical-text__code--display">
+                {segment.value.trim()}
+              </code>
+            </span>
+          ) : (
+            <code
+              className={`technical-text__code technical-text__code--${segment.kind}`}
+              key={`${segment.value}-${index}`}
+            >
+              {segment.value}
+            </code>
+          )
         ) : (
           segment.value
         ),

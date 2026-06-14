@@ -82,7 +82,17 @@ const TECHNICAL_PATTERNS = [
   {
     kind: "code",
     pattern:
-      /\b(?:const\s+)?(?:unsigned\s+|signed\s+)?(?:void|char|short|int|long|float|double|size_t|bool|struct\s+[A-Za-z_]\w*|[A-Za-z_]\w*_t)\s+\*?[A-Za-z_]\w*\s*\([^()]*\)/g,
+      /\b(?:const\s+)?(?:unsigned\s+|signed\s+)?(?:void|char|short|int|long|float|double|size_t|bool|struct\s+[A-Za-z_]\w*|[A-Za-z_]\w*_t)\s*\(\s*\*+\s*[A-Za-z_]\w*(?:\s*\[[^\]]+\])?\s*\)\s*\([^;]*\)\s*;?/g,
+  },
+  {
+    kind: "code",
+    pattern:
+      /\b(?:const\s+)?(?:unsigned\s+|signed\s+)?(?:void|char|short|int|long|float|double|size_t|bool|struct\s+[A-Za-z_]\w*|[A-Za-z_]\w*_t)\s*\(\s*\*+\s*[A-Za-z_]\w*\s*\)\s*\[[^\]]+\]\s*;?/g,
+  },
+  {
+    kind: "code",
+    pattern:
+      /\b(?:const\s+)?(?:unsigned\s+|signed\s+)?(?:void|char|short|int|long|float|double|size_t|bool|struct\s+[A-Za-z_]\w*|[A-Za-z_]\w*_t)\s+\*?[A-Za-z_]\w*\s*\((?:[^()]|\([^()]*\))*\)\s*;?/g,
   },
   {
     kind: "code",
@@ -96,11 +106,21 @@ const TECHNICAL_PATTERNS = [
   {
     kind: "code",
     pattern:
-      /(?<!-)\b(?:printf|scanf|fprintf|fscanf|sprintf|snprintf|fopen|fclose|open|close|read|write|lseek|malloc|calloc|realloc|free|strlen|strcpy|strncpy|memcpy|memset|sizeof|fork|exec|execl|execv|wait|waitpid|pipe|dup|dup2|socket|bind|listen|accept|connect|pthread_[A-Za-z_]\w*|sem_[A-Za-z_]\w*)\b(?!-)(?:\s*\([^()]*\))?/g,
+      /(?<!-)\b(?:printf|scanf|fprintf|fscanf|sprintf|snprintf|fopen|fclose|open|close|read|write|lseek|malloc|calloc|realloc|free|strlen|strcpy|strncpy|memcpy|memset|sizeof|fork|exec|execl|execv|wait|waitpid|pipe|dup|dup2|socket|bind|listen|accept|connect|pthread_[A-Za-z_]\w*|sem_[A-Za-z_]\w*)\b(?!-)(?:\s*\((?:[^()]|\([^()]*\))*\))?\s*;?/g,
   },
   {
     kind: "code",
-    pattern: /\b[A-Za-z_]\w*\([^()]*\)/g,
+    pattern: /\b[A-Za-z_]\w*\((?:[^()]|\([^()]*\))*\)\s*;?/g,
+  },
+  {
+    kind: "code",
+    pattern:
+      /\([A-Za-z_]\w*(?:\s*\*)?\)\s*[A-Za-z_]\w*(?:\s*(?:\+|-|\*|\/|%)\s*(?:[A-Za-z_]\w*|-?\d+(?:\.\d+)?))+/g,
+  },
+  {
+    kind: "code",
+    pattern:
+      /\b[A-Za-z_]\w*\s*=\s*(?:(?:\+\+|--)\s*)?[A-Za-z_]\w*(?:\s*(?:\+\+|--))?\s*;?/g,
   },
   {
     kind: "code",
@@ -247,6 +267,27 @@ export function formatLearningText(value) {
   }
 
   return segments;
+}
+
+export function isDisplayCodeSegment(segment) {
+  if (segment?.type !== "code" || segment.kind === "command") {
+    return false;
+  }
+
+  const value = segment.value.trim();
+
+  return (
+    /\([^)]*\)\s*[A-Za-z_]\w*\s*(?:\+|-|\*|\/|%)/.test(value) ||
+    (
+      value.length >= 14 &&
+      (
+      /;\s*$/.test(value) ||
+      /\(\s*\*+\s*[A-Za-z_]/.test(value) ||
+      /(?:=|\+\+|--|->|<<|>>|\|\||&&)/.test(value) ||
+      /\w+\s*\([^)]*,[^)]*\)/.test(value)
+      )
+    )
+  );
 }
 
 export function normalizeLearningText(value) {

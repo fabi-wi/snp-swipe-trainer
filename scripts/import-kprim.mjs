@@ -8,7 +8,7 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const defaultPdf =
   resolve(projectRoot, "SNP_FS2026_Kprim_MC_Trainer_Design.pdf");
 const pdfPath = resolve(process.argv[2] ?? defaultPdf);
-const outputPath = resolve(projectRoot, "src/data/cards.json");
+const outputPath = resolve(projectRoot, "src/data/cards.legacy.json");
 
 const rawText = execFileSync("pdftotext", ["-layout", pdfPath, "-"], {
   encoding: "utf8",
@@ -276,4 +276,4 @@ writeFileSync(outputPath, `${JSON.stringify(payload, null, 2)}\n`);
 console.log(
   `Importiert: ${payload.questionCount} Fragen, ${payload.cardCount} Karten, ${payload.topics.length} Themen.`,
 );
-console.log(`Ausgabe: ${outputPath}`);
+console.log(`Legacy-Ausgabe: ${outputPath}`);
